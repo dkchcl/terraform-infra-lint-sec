@@ -1,0 +1,38 @@
+trigger: 
+  - main
+  - feature/*
+
+pool: New_agent
+
+steps:
+- task: TerraformInstaller@1
+  displayName: Terraform install
+  inputs:
+    terraformVersion: 'latest'
+- task: TerraformTask@5
+  displayName: Terraform init
+  inputs:
+    provider: 'azurerm'
+    command: 'init'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
+    backendServiceArm: 'sc-nov25'
+    backendAzureRmResourceGroupName: 'dkc-state-rg'
+    backendAzureRmStorageAccountName: 'dkcstatestg123'
+    backendAzureRmContainerName: 'statefiles'
+    backendAzureRmKey: 'dev.tfstate'
+- task: TerraformTask@5
+  displayName: Terraform Plan
+  inputs:
+    provider: 'azurerm'
+    command: 'plan'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
+    environmentServiceNameAzureRM: 'sc-nov25'
+- task: TerraformTask@5
+  displayName: Terraform Apply
+  inputs:
+    provider: 'azurerm'
+    command: 'apply'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
+    environmentServiceNameAzureRM: 'sc-nov25'
+
+    
