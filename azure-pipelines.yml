@@ -44,6 +44,7 @@ stages:
             provider: 'azurerm'
             command: 'validate'
             workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
+
   - stage: Scanning_Stage
     displayName: Scanning Stage
     jobs:
@@ -89,6 +90,7 @@ stages:
 
   - stage: MannualApprovalStage
     displayName: Mannual Approval Stage
+    pool: server
     jobs:
       - job: MannualApproval
         displayName: Mannual Approval
