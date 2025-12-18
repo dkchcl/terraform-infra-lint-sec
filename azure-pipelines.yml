@@ -1,38 +1,66 @@
-trigger: 
-  - main
-  - feature/*
+trigger: none
+  # - main
 
 pool: New_agent
 
-steps:
-- task: TerraformInstaller@1
-  displayName: Terraform install
-  inputs:
-    terraformVersion: 'latest'
-- task: TerraformTask@5
-  displayName: Terraform init
-  inputs:
-    provider: 'azurerm'
-    command: 'init'
-    workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
-    backendServiceArm: 'sc-nov25'
-    backendAzureRmResourceGroupName: 'dkc-state-rg'
-    backendAzureRmStorageAccountName: 'dkcstatestg123'
-    backendAzureRmContainerName: 'statefiles'
-    backendAzureRmKey: 'dev.tfstate'
-- task: TerraformTask@5
-  displayName: Terraform Plan
-  inputs:
-    provider: 'azurerm'
-    command: 'plan'
-    workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
-    environmentServiceNameAzureRM: 'sc-nov25'
-- task: TerraformTask@5
-  displayName: Terraform Apply
-  inputs:
-    provider: 'azurerm'
-    command: 'apply'
-    workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
-    environmentServiceNameAzureRM: 'sc-nov25'
+stages:
+  - stage: Terraform_install_fmt_init_Validate
+    displayName: Terraform_install_fmt_init_Validate
+    jobs:
+      - job: Terraform_install_init
+        steps:
+          - task: TerraformInstaller@1
+            displayName: Terraform install
+            inputs:
+              terraformVersion: 'latest'
+          - task: TerraformTask@5
+            displayName: Terraform init
+            inputs:
+              provider: 'azurerm'
+              command: 'init'
+              workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
+              backendServiceArm: 'infra-sc'
+              backendAzureRmResourceGroupName: 'dkc-state-rg'
+              backendAzureRmStorageAccountName: 'dkcstatestg123'
+              backendAzureRmContainerName: 'statefiles'
+              backendAzureRmKey: 'dev.tfstate'
+
+      - job: Terraform_fmt_Validate
+        displayName: Terraform_fmt_Validate
+        steps:
+        - task: TerraformTask@5
+          displayName: Terraform Fmt
+          inputs:
+            provider: 'azurerm'
+            command: 'custom'
+            commandOptions: 'fmt -recursive'
+            outputTo: 'console'
+            environmentServiceNameAzureRM: 'infra-sc'
+        - task: TerraformTask@5
+          displayName: Terraform Validate
+          inputs:
+            provider: 'azurerm'
+            command: 'validate'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
+
+
+
+
+# steps:
+
+# - task: TerraformTask@5
+#   displayName: Terraform Plan
+#   inputs:
+#     provider: 'azurerm'
+#     command: 'plan'
+#     workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
+#     environmentServiceNameAzureRM: 'sc-nov25'
+# - task: TerraformTask@5
+#   displayName: Terraform Apply
+#   inputs:
+#     provider: 'azurerm'
+#     command: 'apply'
+#     workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
+#     environmentServiceNameAzureRM: 'sc-nov25'
 
     
