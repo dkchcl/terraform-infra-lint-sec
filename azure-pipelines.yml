@@ -31,6 +31,17 @@ stages:
         dependsOn: Terraform_install_init
         steps:
         - task: TerraformTask@5
+          displayName: Terraform init
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
+            backendServiceArm: 'infra-sc'
+            backendAzureRmResourceGroupName: 'dkc-state-rg'
+            backendAzureRmStorageAccountName: 'dkcstatestg1234'
+            backendAzureRmContainerName: 'statefiles'
+            backendAzureRmKey: 'dev.tfstate'
+        - task: TerraformTask@5
           displayName: Terraform Fmt
           inputs:
             provider: 'azurerm'
