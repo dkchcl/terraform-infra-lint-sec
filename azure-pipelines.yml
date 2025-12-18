@@ -22,7 +22,7 @@ stages:
               workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
               backendServiceArm: 'infra-sc'
               backendAzureRmResourceGroupName: 'dkc-state-rg'
-              backendAzureRmStorageAccountName: 'dkcstatestg123'
+              backendAzureRmStorageAccountName: 'dkcstatestg1234'
               backendAzureRmContainerName: 'statefiles'
               backendAzureRmKey: 'dev.tfstate'
 
@@ -30,6 +30,17 @@ stages:
         displayName: Terraform fmt Validate
         dependsOn: Terraform_install_init
         steps:
+        - task: TerraformTask@5
+          displayName: Terraform init
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
+            backendServiceArm: 'infra-sc'
+            backendAzureRmResourceGroupName: 'dkc-state-rg'
+            backendAzureRmStorageAccountName: 'dkcstatestg1234'
+            backendAzureRmContainerName: 'statefiles'
+            backendAzureRmKey: 'dev.tfstate'
         - task: TerraformTask@5
           displayName: Terraform Fmt
           inputs:
@@ -55,14 +66,17 @@ stages:
           displayName: TFSec
           inputs:
             version: 'v1.26.0'
-            args: 'tfsec .'
             dir: '$(System.DefaultWorkingDirectory)'
+
         - task: PowerShell@2
-          displayName: TFLint
+          displayName: 'Run TFLint'
           inputs:
             targetType: 'inline'
-            script: 'tflint'
+            script: |
+              tflint --init
+              tflint
             workingDirectory: '$(System.DefaultWorkingDirectory)'
+    
 
   - stage: PlanStage
     displayName: Plan Stage
@@ -78,10 +92,11 @@ stages:
             workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
             backendServiceArm: 'infra-sc'
             backendAzureRmResourceGroupName: 'dkc-state-rg'
-            backendAzureRmStorageAccountName: 'dkcstatestg123'
+            backendAzureRmStorageAccountName: 'dkcstatestg1234'
             backendAzureRmContainerName: 'statefiles'
             backendAzureRmKey: 'dev.tfstate'
         - task: TerraformTask@5
+          displayName: Terraform Plan
           inputs:
             provider: 'azurerm'
             command: 'plan'
@@ -102,7 +117,7 @@ stages:
             approvers: 'dkc.hcl@gmail.com'
 
   - stage: ApplyStage 
-    displayName: ApplyStage
+    displayName: Apply Stage
     jobs:
       - job: TerraformApply
         displayName: Terraform Apply
@@ -115,7 +130,7 @@ stages:
             workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
             backendServiceArm: 'infra-sc'
             backendAzureRmResourceGroupName: 'dkc-state-rg'
-            backendAzureRmStorageAccountName: 'dkcstatestg123'
+            backendAzureRmStorageAccountName: 'dkcstatestg1234'
             backendAzureRmContainerName: 'statefiles'
             backendAzureRmKey: 'dev.tfstate'
         - task: TerraformTask@5
