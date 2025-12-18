@@ -68,12 +68,6 @@ stages:
             version: 'v1.26.0'
             dir: '$(System.DefaultWorkingDirectory)'
 
-        # - task: PowerShell@2
-        #   displayName: 'Install TFLint'
-        #   inputs:
-        #     targetType: 'inline'
-        #     script: |
-        #       choco install tflint -y
         - task: PowerShell@2
           displayName: 'Run TFLint'
           inputs:
@@ -102,6 +96,7 @@ stages:
             backendAzureRmContainerName: 'statefiles'
             backendAzureRmKey: 'dev.tfstate'
         - task: TerraformTask@5
+          displayName: Terraform Plan
           inputs:
             provider: 'azurerm'
             command: 'plan'
