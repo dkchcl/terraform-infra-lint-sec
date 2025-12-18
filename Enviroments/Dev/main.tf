@@ -81,17 +81,6 @@ module "sql_db" {
   sql_databases = var.sql_databases
 }
 
-module "load_balancer" {
-  depends_on     = [module.rg, module.subnet, module.public_ip, module.vm]
-  source         = "../../Modules/azurerm_load_balancer"
-  load_balancers = var.load_balancers
-}
-
-module "nic_ba_pool_assoc" {
-  depends_on        = [module.load_balancer]
-  source            = "../../Modules/azurerm_nic_backend_address_pool_assoc"
-  nic_ba_pool_assoc = var.nic_ba_pool_assoc
-}
 
 
 

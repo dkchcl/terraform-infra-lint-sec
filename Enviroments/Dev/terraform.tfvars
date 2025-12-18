@@ -6,16 +6,10 @@ rg_name = {
     location   = "West US 2"
     managed_by = "Terraform"
     tags = {
-      project    = "tech-007"
       env        = "dev"
       team       = "dev-007"
       created_by = "Dinesh"
     }
-  }
-
-  rg2 = {
-    name     = "dev_rg_02"
-    location = "eastus"
   }
 }
 
@@ -23,24 +17,13 @@ rg_name = {
 
 vnet_name = {
   vnet1 = {
-    name                           = "dev-vnet-01"
-    location                       = "West US 2"
-    resource_group_name            = "dev_rg_01"
-    address_space                  = ["10.0.0.0/16"]
-    bgp_community                  = "12076:20000"
-    dns_servers                    = ["10.1.0.4", "10.1.0.5"]
-    flow_timeout_in_minutes        = 10
-    private_endpoint_vnet_policies = "Disabled"
+    name                = "dev-vnet-01"
+    location            = "West US 2"
+    resource_group_name = "dev_rg_01"
+    address_space       = ["10.0.0.0/16"]
     tags = {
       env = "dev"
     }
-  }
-
-  "vnet2" = {
-    name                = "dev-vnet-02"
-    location            = "West US 2"
-    resource_group_name = "dev_rg_02"
-    address_space       = ["10.2.0.0/16"]
   }
 }
 
@@ -48,82 +31,32 @@ vnet_name = {
 
 subnets = {
   subnet1 = {
-    subnet_name                                   = "subnet-01"
-    resource_group_name                           = "dev_rg_01"
-    virtual_network_name                          = "dev-vnet-01"
-    address_prefixes                              = ["10.0.1.0/24"]
-    # default_outbound_access_enabled               = true
-    # private_endpoint_network_policies             = "Disabled"
-    # private_link_service_network_policies_enabled = true
-    # service_endpoints                             = ["Microsoft.Storage", "Microsoft.Sql"]
+    subnet_name          = "subnet-01"
+    resource_group_name  = "dev_rg_01"
+    virtual_network_name = "dev-vnet-01"
+    address_prefixes     = ["10.0.1.0/24"]
   }
 
   subnet2 = {
-    subnet_name                                   = "subnet-02"
-    resource_group_name                           = "dev_rg_01"
-    virtual_network_name                          = "dev-vnet-01"
-    address_prefixes                              = ["10.0.2.0/24"]
-    default_outbound_access_enabled               = false
-    private_endpoint_network_policies             = "Disabled"
-    private_link_service_network_policies_enabled = true
-    service_endpoints                             = ["Microsoft.Storage"]
+    subnet_name          = "subnet-02"
+    resource_group_name  = "dev_rg_01"
+    virtual_network_name = "dev-vnet-01"
+    address_prefixes     = ["10.0.2.0/24"]
   }
-  subnet3 = {
-    subnet_name                                   = "subnet-03"
-    resource_group_name                           = "dev_rg_01"
-    virtual_network_name                          = "dev-vnet-01"
-    address_prefixes                              = ["10.0.3.0/24"]
-    default_outbound_access_enabled               = false
-    private_endpoint_network_policies             = "Disabled"
-    private_link_service_network_policies_enabled = true
-    service_endpoints                             = ["Microsoft.Storage"]
 
-    delegation = {
-      name = "deleg-01"
-      service_delegation = [
-        {
-          name    = "Microsoft.Web/serverFarms"
-          actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
-        }
-      ]
-    }
-  }
-  subnet4 = {
-    subnet_name                                   = "AzureBastionSubnet"
-    resource_group_name                           = "dev_rg_01"
-    virtual_network_name                          = "dev-vnet-01"
-    address_prefixes                              = ["10.0.4.0/24"]
-    default_outbound_access_enabled               = false
-    private_endpoint_network_policies             = "Disabled"
-    private_link_service_network_policies_enabled = true
-    service_endpoints                             = ["Microsoft.Storage"]
+  subnet3 = {
+    subnet_name          = "AzureBastionSubnet"
+    resource_group_name  = "dev_rg_01"
+    virtual_network_name = "dev-vnet-01"
+    address_prefixes     = ["10.0.3.0/24"]
   }
 }
-
 
 # Public IP Addresses
 
 public_ip = {
-  "lb_pip" = {
-    pip_name                = "dev-pip-01"
-    resource_group_name     = "dev_rg_01"
-    location                = "West US 2"
-    allocation_method       = "Static"
-    sku                     = "Standard"
-    sku_tier                = "Regional"
-    ddos_protection_mode    = "Enabled"
-    domain_name_label       = "mywebapp"
-    domain_name_label_scope = "NoReuse"
-    idle_timeout_in_minutes = 4
-    ip_version              = "IPv4"
-    tags = {
-      env = "dev"
-      app = "load_balancer"
-    }
-  }
-
   "bastion_pip" = {
-    pip_name            = "dev-pip-03"
+    pip_name            = "dev-pip-01"
     resource_group_name = "dev_rg_01"
     location            = "West US 2"
     allocation_method   = "Static"
@@ -181,10 +114,6 @@ nsgs = {
         destination_address_prefix = "*"
       },
     ]
-
-    tags = {
-      env = "dev"
-    }
   }
 }
 
@@ -201,17 +130,7 @@ nics = {
       ipconfig1 = {
         name                          = "ipconfig1"
         private_ip_address_allocation = "Dynamic"
-        # private_ip_address_version    = "IPv4"
-        # primary                       = true
       }
-    }
-
-    dns_servers                    = ["8.8.8.8", "8.8.4.4"]
-    ip_forwarding_enabled          = true
-    accelerated_networking_enabled = false
-    tags = {
-      environment = "dev"
-      owner       = "team-network"
     }
   }
 
@@ -220,49 +139,14 @@ nics = {
     location             = "West US 2"
     resource_group_name  = "dev_rg_01"
     virtual_network_name = "dev-vnet-01"
-    subnet_name          = "subnet-01"
+    subnet_name          = "subnet-02"
     ip_configuration = {
       ipconfig2 = {
         name                          = "ipconfig2"
         private_ip_address_allocation = "Dynamic"
-        # private_ip_address_version    = "IPv4"
-        # primary                       = true
       }
     }
-
-    dns_servers                    = ["8.8.2.2"]
-    ip_forwarding_enabled          = true
-    accelerated_networking_enabled = false
-    tags = {
-      environment = "test"
-      owner       = "team-network"
-    }
   }
-
-  nic3 = {
-    name                 = "dev-nic-03"
-    location             = "West US 2"
-    resource_group_name  = "dev_rg_01"
-    virtual_network_name = "dev-vnet-01"
-    subnet_name          = "subnet-01"
-    ip_configuration = {
-      ipconfig3 = {
-        name                          = "ipconfig3"
-        private_ip_address_allocation = "Dynamic"
-        # private_ip_address_version    = "IPv4"
-        # primary                       = true
-      }
-    }
-
-    # dns_servers                    = ["8.8.8.8", "8.8.4.4"]
-    ip_forwarding_enabled          = true
-    accelerated_networking_enabled = false
-    tags = {
-      environment = "dev"
-      owner       = "team-network"
-    }
-  }
-
 }
 
 # Subnets and NSGs Association
@@ -277,19 +161,11 @@ subnet_nsg_nic_assoc = {
   }
 
   sub_nsg_assoc2 = {
-    nsg_name             = "devnsg01"
+    nsg_name             = "devnsg02"
     virtual_network_name = "dev-vnet-01"
-    subnet_name          = "subnet-01"
+    subnet_name          = "subnet-02"
     resource_group_name  = "dev_rg_01"
     nic_name             = "dev-nic-02"
-  }
-
-  sub_nsg_assoc3 = {
-    nsg_name             = "devnsg01"
-    virtual_network_name = "dev-vnet-01"
-    subnet_name          = "subnet-01"
-    resource_group_name  = "dev_rg_01"
-    nic_name             = "dev-nic-03"
   }
 }
 
@@ -303,7 +179,7 @@ bastion_hosts = {
     sku                       = "Standard"
     virtual_network_name      = "dev-vnet-01"
     subnet_name               = "AzureBastionSubnet"
-    pip_name                  = "dev-pip-03"
+    pip_name                  = "dev-pip-01"
     copy_paste_enabled        = true
     file_copy_enabled         = true
     ip_connect_enabled        = true
@@ -328,7 +204,7 @@ bastion_hosts = {
 
 key_vaults = {
   kv1 = {
-    key_vault_name              = "dkcprodkv16"
+    key_vault_name              = "devnewkv01"
     location                    = "West US 2"
     resource_group_name         = "dev_rg_01"
     enabled_for_disk_encryption = true
@@ -341,11 +217,6 @@ key_vaults = {
       secret_permissions  = ["Get", "List", "Set", "Delete", "Purge", "Recover"]
       storage_permissions = ["Get", "List", "Set"]
     }
-
-    tags = {
-      environment = "dev"
-      owner       = "bhai"
-    }
   }
 }
 
@@ -353,28 +224,28 @@ key_vault_secrets = {
   vm_users = {
     secret_name         = "vm-username"
     secret_value        = "adminuser"
-    key_vault_name      = "dkcprodkv16"
+    key_vault_name      = "devnewkv01"
     resource_group_name = "dev_rg_01"
   }
 
   vm_pass = {
     secret_name         = "vm-password"
     secret_value        = "Bbpl@#123456"
-    key_vault_name      = "dkcprodkv16"
+    key_vault_name      = "devnewkv01"
     resource_group_name = "dev_rg_01"
   }
 
   sql_user = {
     secret_name         = "db-username"
     secret_value        = "dbuser"
-    key_vault_name      = "dkcprodkv16"
+    key_vault_name      = "devnewkv01"
     resource_group_name = "dev_rg_01"
   }
 
   sql_pass = {
     secret_name         = "db-password"
     secret_value        = "Bbpl@#123456"
-    key_vault_name      = "dkcprodkv16"
+    key_vault_name      = "devnewkv01"
     resource_group_name = "dev_rg_01"
   }
 
@@ -387,9 +258,9 @@ vms = {
     vm_name                         = "frontend-vm-01"
     location                        = "West US 2"
     resource_group_name             = "dev_rg_01"
-    size                            = "Standard_B1s"
+    size                            = "Standard_B2s"
     nic_name                        = "dev-nic-01"
-    key_vault_name                  = "dkcprodkv16"
+    key_vault_name                  = "devnewkv01"
     secret_name                     = "vm-username"
     secret_password                 = "vm-password"
     disable_password_authentication = false
@@ -401,14 +272,9 @@ vms = {
 
     source_image_reference = {
       publisher = "Canonical"
-      offer     = "UbuntuServer"
-      sku       = "18.04-LTS"
+      offer     = "0001-com-ubuntu-server-jammy"
+      sku       = "22_04-lts-gen2"
       version   = "latest"
-    }
-
-    tags = {
-      environment = "dev"
-      owner       = "team-app"
     }
   }
 
@@ -416,9 +282,9 @@ vms = {
     vm_name                         = "backend-vm-01"
     location                        = "West US 2"
     resource_group_name             = "dev_rg_01"
-    size                            = "Standard_B1s"
+    size                            = "Standard_B2s"
     nic_name                        = "dev-nic-02"
-    key_vault_name                  = "dkcprodkv16"
+    key_vault_name                  = "devnewkv01"
     secret_name                     = "vm-username"
     secret_password                 = "vm-password"
     disable_password_authentication = false
@@ -430,51 +296,16 @@ vms = {
 
     source_image_reference = {
       publisher = "Canonical"
-      offer     = "UbuntuServer"
-      sku       = "18.04-LTS"
+      offer     = "0001-com-ubuntu-server-jammy"
+      sku       = "22_04-lts-gen2"
       version   = "latest"
     }
-
-    tags = {
-      environment = "prod"
-      role        = "database"
-    }
   }
-
-  vm3 = {
-    vm_name                         = "frontend-vm-02"
-    location                        = "West US 2"
-    resource_group_name             = "dev_rg_01"
-    size                            = "Standard_B1s"
-    nic_name                        = "dev-nic-03"
-    key_vault_name                  = "dkcprodkv16"
-    secret_name                     = "vm-username"
-    secret_password                 = "vm-password"
-    disable_password_authentication = false
-
-    os_disk = {
-      caching              = "ReadWrite"
-      storage_account_type = "Standard_LRS"
-    }
-
-    source_image_reference = {
-      publisher = "Canonical"
-      offer     = "UbuntuServer"
-      sku       = "18.04-LTS"
-      version   = "latest"
-    }
-
-    tags = {
-      environment = "dev"
-      owner       = "team-app"
-    }
-  }
-
 }
 
 storage_accounts = {
   "stg1" = {
-    name                     = "dkcstorageaccount01"
+    name                     = "newstorageaccount011"
     resource_group_name      = "dev_rg_01"
     location                 = "West US 2"
     account_tier             = "Standard"
@@ -485,13 +316,13 @@ storage_accounts = {
 
 sql_servers = {
   "server1" = {
-    name                          = "dkcsqlserver99"
+    name                          = "devnewsqlserver99"
     resource_group_name           = "dev_rg_01"
     location                      = "West US 2"
     version                       = "12.0"
     secret_name                   = "db-username"
     secret_password               = "db-password"
-    key_vault_name                = "dkcprodkv16"
+    key_vault_name                = "devnewkv01"
     connection_policy             = "Default"
     minimum_tls_version           = "1.2"
     public_network_access_enabled = true
@@ -501,12 +332,11 @@ sql_servers = {
 
 sql_databases = {
   "db1" = {
-    db_name             = "mydb1"
-    sql_server_name     = "dkcsqlserver99"
+    db_name             = "devdb-01"
+    sql_server_name     = "devnewsqlserver99"
     resource_group_name = "dev_rg_01"
     sku_name            = "GP_Gen5_2"
     max_size_gb         = 5
-    # min_capacity        = 0.5
     short_term_retention_policy = {
       retention_days = 7
     }
@@ -518,82 +348,6 @@ sql_databases = {
   }
 }
 
-load_balancers = {
-  dev-lb = {
-    # Load Balancer details
-    lb_name             = "dev-lb-01"
-    resource_group_name = "dev_rg_01"
-    location            = "West US 2"
-    sku                 = "Standard"
-    sku_tier            = "Regional"
-    pip_name            = "dev-pip-01"
-    tags = {
-      environment = "production"
-      owner       = "network-team"
-    }
-
-    # Frontend IP configuration
-    frontend_ip_configuration = {
-      fe1 = {
-        name = "frontend-1"
-        # subnet_name = "subnet-02"      
-        # private_ip_address_allocation = "Dynamic"
-        # private_ip_address_version    = "IPv4"
-      }
-    }
-
-    # Backend Address Pool
-    ba_pool_name = "backend-pool-1"
-    # synchronous_mode     = "Automatic"
-    # virtual_network_name = "dev-vnet-01"
-
-    # LB Probe
-    lb_probes_name = "http-health-probe"
-    port           = 80
-    probe_protocol = "Http"
-    # probe_threshold     = 3
-    request_path = "/"
-    # interval_in_seconds = 10
-    # number_of_probes    = 3
-
-    # LB Rule
-    lb_rules_name                  = "http-rule"
-    frontend_ip_configuration_name = "frontend-1"
-    lbrule_protocol                = "Tcp"
-    frontend_port                  = 80
-    backend_port                   = 80
-    #   floating_ip_enabled            = false
-    #   idle_timeout_in_minutes        = 5
-    #   load_distribution              = "Default"
-    #   disable_outbound_snat          = false
-    #   tcp_reset_enabled              = true
-  }
-}
-
-nic_ba_pool_assoc = {
-  nic_ba_pool_assoc1 = {
-    ip_configuration_name = "ipconfig1"
-    resource_group_name   = "dev_rg_01"
-    nic_name              = "dev-nic-01"
-    lb_name               = "dev-lb-01"
-    ba_pool_name          = "backend-pool-1"
-  }
-  nic_ba_pool_assoc2 = {
-    ip_configuration_name = "ipconfig2"
-    resource_group_name   = "dev_rg_01"
-    nic_name              = "dev-nic-02"
-    lb_name               = "dev-lb-01"
-    ba_pool_name          = "backend-pool-1"
-  }
-
-  nic_ba_pool_assoc3 = {
-    ip_configuration_name = "ipconfig3"
-    resource_group_name   = "dev_rg_01"
-    nic_name              = "dev-nic-03"
-    lb_name               = "dev-lb-01"
-    ba_pool_name          = "backend-pool-1"
-  }
-}
 
 
 

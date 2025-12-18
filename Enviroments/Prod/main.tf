@@ -28,19 +28,16 @@ module "nsg" {
 }
 
 module "subnet_nsg_nic_assoc" {
-  depends_on       = [module.nsg, module.subnet]
-  source           = "../../Modules/azurerm_subnet_nsg_nic_assoc"
-  subnet_nsg_assoc = var.subnet_nsg_assoc
-
+  depends_on           = [module.nsg, module.subnet, module.nic]
+  source               = "../../Modules/azurerm_subnet_nsg_nic_assoc"
+  subnet_nsg_nic_assoc = var.subnet_nsg_nic_assoc
 }
 
-# Bastion Host
-
-# module "bastion_host" {
-#   depends_on    = [module.public_ip, module.subnet, ]
-#   source        = "../../Modules/azurerm_bastion_host"
-#   bastion_hosts = var.bastion_hosts
-# }
+module "bastion_host" {
+  depends_on    = [module.public_ip, module.subnet, ]
+  source        = "../../Modules/azurerm_bastion_host"
+  bastion_hosts = var.bastion_hosts
+}
 
 module "kv" {
   depends_on = [module.rg]
@@ -54,9 +51,14 @@ module "kvs" {
   key_vault_secrets = var.key_vault_secrets
 }
 
+module "nic" {
+  depends_on = [module.subnet, module.public_ip]
+  source     = "../../Modules/azurerm_network_Interface"
+  nics       = var.nics
+}
 
 module "vm" {
-  depends_on = [module.rg, module.vnet, module.subnet, module.public_ip, module.nsg, module.kv, module.kvs]
+  depends_on = [module.nic, module.nsg, module.kvs]
   source     = "../../Modules/azurerm_virtual_machine"
   vms        = var.vms
 }
@@ -68,7 +70,7 @@ module "stg" {
 }
 
 module "sql_server" {
-  depends_on  = [module.rg]
+  depends_on  = [module.rg, module.kvs]
   source      = "../../Modules/azurerm_sql_server"
   sql_servers = var.sql_servers
 }
@@ -78,6 +80,21 @@ module "sql_db" {
   source        = "../../Modules/azurerm_sql_database"
   sql_databases = var.sql_databases
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

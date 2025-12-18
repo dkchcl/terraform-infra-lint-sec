@@ -128,47 +128,47 @@ variable "nsgs" {
 
 # Variable for Subnet_nsg_association
 
-variable "subnet_nsg_assoc" {
+variable "subnet_nsg_nic_assoc" {
 
 }
 
 # Variable for Bastion Host
 
-# variable "bastion_hosts" {
-#   description = "Map of Bastion Hosts to create"
-#   type = map(object({
-#     bastion_host_name         = string 
-#     resource_group_name       = string 
-#     location                  = string 
-#     virtual_network_name      = optional(string)
-#     subnet_name               = optional(string)
-#     pip_name                  = optional(string)
-#     copy_paste_enabled        = optional(bool, true)         
-#     file_copy_enabled         = optional(bool, false)        
-#     sku                       = optional(string, "Basic")    
-#     ip_connect_enabled        = optional(bool, false)        
-#     kerberos_enabled          = optional(bool, false)        
-#     scale_units               = optional(number, 2)         
-#     shareable_link_enabled    = optional(bool, false)       
-#     tunneling_enabled         = optional(bool, false)        
-#     session_recording_enabled = optional(bool, false)        
-#     tags                      = optional(map(string), {})    
-#     zones                     = optional(list(string), null) 
-#     ip_configuration = object({
-#       name = string 
-#     })
-#   }))
-# }
+variable "bastion_hosts" {
+  description = "Map of Bastion Hosts to create"
+  type = map(object({
+    bastion_host_name         = string
+    resource_group_name       = string
+    location                  = string
+    virtual_network_name      = optional(string)
+    subnet_name               = optional(string)
+    pip_name                  = optional(string)
+    copy_paste_enabled        = optional(bool, true)
+    file_copy_enabled         = optional(bool, false)
+    sku                       = optional(string, "Basic")
+    ip_connect_enabled        = optional(bool, false)
+    kerberos_enabled          = optional(bool, false)
+    scale_units               = optional(number, 2)
+    shareable_link_enabled    = optional(bool, false)
+    tunneling_enabled         = optional(bool, false)
+    session_recording_enabled = optional(bool, false)
+    tags                      = optional(map(string), {})
+    zones                     = optional(list(string), null)
+    ip_configuration = object({
+      name = string
+    })
+  }))
+}
 
 # Variable for Key Vaults & Key Vault Secrets
 
 variable "key_vaults" {
   description = "Azure Key Vault configurations"
   type = map(object({
-    key_vault_name      = string
-    location            = string
-    resource_group_name = string
-    sku_name            = string
+    key_vault_name                  = string
+    location                        = string
+    resource_group_name             = string
+    sku_name                        = string
     enabled_for_disk_encryption     = optional(bool, false)
     soft_delete_retention_days      = optional(number, 90)
     purge_protection_enabled        = optional(bool, false)
@@ -211,33 +211,51 @@ variable "key_vault_secrets" {
   }))
 }
 
-# Variable for NICs & VMs 
+# Variable for NICs 
 
-variable "vms" {
-  # NIC -  
-  description = "Configuration for Azure Linux Virtual Machines"
+variable "nics" {
   type = map(object({
-    nic_name             = optional(string)
-    subnet_name          = optional(string)
+    name                 = string
+    location             = string
+    resource_group_name  = string
     virtual_network_name = optional(string)
+    subnet_name          = optional(string)
     pip_name             = optional(string)
-    # network_interface_ids = optional(string)
-    ip_configuration = optional(object({
-      ip_config_name                = optional(string)
-      private_ip_address_allocation = optional(string)
-      subnet_id                     = optional(string)
-      public_ip_address_id          = optional(string)
+
+    ip_configuration = map(object({
+      name                                               = string
+      private_ip_address_allocation                      = string
+      private_ip_address_version                         = optional(string)
+      gateway_load_balancer_frontend_ip_configuration_id = optional(string)
+      primary                                            = optional(bool)
+      private_ip_address                                 = optional(string)
     }))
 
-    # Virtual Machine
+    auxiliary_mode                 = optional(string)
+    auxiliary_sku                  = optional(string)
+    dns_servers                    = optional(list(string))
+    edge_zone                      = optional(string)
+    ip_forwarding_enabled          = optional(bool)
+    accelerated_networking_enabled = optional(bool)
+    internal_dns_name_label        = optional(string)
+    tags                           = optional(map(string))
+  }))
+}
+
+# Variable for Virtual Machine
+
+variable "vms" {
+  description = "Configuration for Azure Linux Virtual Machines"
+  type = map(object({
     vm_name             = string
     location            = string
     resource_group_name = string
     # network_interface_ids = list(string)
-    size           = string
-    key_vault_name = optional(string)
-    secret_name    = optional(string)
-    secret_value   = optional(string)
+    size            = string
+    nic_name        = optional(string)
+    key_vault_name  = optional(string)
+    secret_name     = optional(string)
+    secret_password = optional(string)
     os_disk = object({
       caching                          = string
       storage_account_type             = optional(string)
@@ -336,6 +354,7 @@ variable "vms" {
     virtual_machine_scale_set_id = optional(string)
   }))
 }
+
 
 # VARIABLE FOR STORAGE ACCOUNTS
 
@@ -533,10 +552,11 @@ variable "sql_servers" {
     resource_group_name = string
     location            = string
     version             = string
+    key_vault_name      = optional(string)
+    secret_name         = optional(string)
+    secret_password     = optional(string)
 
     # Optional
-    administrator_login                          = optional(string)
-    administrator_login_password                 = optional(string)
     administrator_login_password_wo              = optional(string)
     administrator_login_password_wo_version      = optional(number)
     connection_policy                            = optional(string)
@@ -633,9 +653,6 @@ variable "sql_databases" {
   }))
   default = {}
 }
-
-
-
 
 
 
