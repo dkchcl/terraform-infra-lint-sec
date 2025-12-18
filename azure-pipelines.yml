@@ -42,6 +42,24 @@ stages:
             provider: 'azurerm'
             command: 'validate'
             workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
+  - stage: Scanning_Stage
+    displayName: Scanning_Stage
+    jobs:
+      - job: Code_Scanning
+        displayName: Code_Scanning
+        steps:
+        - task: tfsec@1
+          displayName: TFSec
+          inputs:
+            version: 'v1.26.0'
+            args: 'tfsec .'
+            dir: '$(System.DefaultWorkingDirectory)'
+        - task: PowerShell@2
+          displayName: TFLint
+          inputs:
+            targetType: 'inline'
+            script: 'tflint'
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
 
 
 
