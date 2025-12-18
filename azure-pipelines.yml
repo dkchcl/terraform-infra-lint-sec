@@ -66,14 +66,23 @@ stages:
           displayName: TFSec
           inputs:
             version: 'v1.26.0'
-            args: 'tfsec .'
             dir: '$(System.DefaultWorkingDirectory)'
+
         - task: PowerShell@2
-          displayName: TFLint
+          displayName: 'Install TFLint'
           inputs:
             targetType: 'inline'
-            script: 'tflint'
+            script: |
+              choco install tflint -y
+        - task: PowerShell@2
+          displayName: 'Run TFLint'
+          inputs:
+            targetType: 'inline'
+            script: |
+              tflint --init
+              tflint
             workingDirectory: '$(System.DefaultWorkingDirectory)'
+    
 
   - stage: PlanStage
     displayName: Plan Stage
