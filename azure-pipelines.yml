@@ -1,38 +1,134 @@
 trigger: 
   - main
-  - feature/*
 
 pool: New_agent
 
-steps:
-- task: TerraformInstaller@1
-  displayName: Terraform install
-  inputs:
-    terraformVersion: 'latest'
-- task: TerraformTask@5
-  displayName: Terraform init
-  inputs:
-    provider: 'azurerm'
-    command: 'init'
-    workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
-    backendServiceArm: 'sc-nov25'
-    backendAzureRmResourceGroupName: 'dkc-state-rg'
-    backendAzureRmStorageAccountName: 'dkcstatestg123'
-    backendAzureRmContainerName: 'statefiles'
-    backendAzureRmKey: 'dev.tfstate'
-- task: TerraformTask@5
-  displayName: Terraform Plan
-  inputs:
-    provider: 'azurerm'
-    command: 'plan'
-    workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
-    environmentServiceNameAzureRM: 'sc-nov25'
-- task: TerraformTask@5
-  displayName: Terraform Apply
-  inputs:
-    provider: 'azurerm'
-    command: 'apply'
-    workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
-    environmentServiceNameAzureRM: 'sc-nov25'
+stages:
+  - stage: Install_fmt_init_Validate_Stage
+    displayName: Install_fmt_init_Validate Stage
+    jobs:
+      - job: Terraform_install_init
+        displayName: Terraform install init
+        steps:
+          - task: TerraformInstaller@1
+            displayName: Terraform install
+            inputs:
+              terraformVersion: 'latest'
+          - task: TerraformTask@5
+            displayName: Terraform init
+            inputs:
+              provider: 'azurerm'
+              command: 'init'
+              workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
+              backendServiceArm: 'infra-sc'
+              backendAzureRmResourceGroupName: 'dkc-state-rg'
+              backendAzureRmStorageAccountName: 'dkcstatestg123'
+              backendAzureRmContainerName: 'statefiles'
+              backendAzureRmKey: 'dev.tfstate'
+
+      - job: Terraform_fmt_Validate
+        displayName: Terraform fmt Validate
+        dependsOn: Terraform_install_init
+        steps:
+        - task: TerraformTask@5
+          displayName: Terraform Fmt
+          inputs:
+            provider: 'azurerm'
+            command: 'custom'
+            commandOptions: 'fmt -recursive'
+            outputTo: 'console'
+            environmentServiceNameAzureRM: 'infra-sc'
+        - task: TerraformTask@5
+          displayName: Terraform Validate
+          inputs:
+            provider: 'azurerm'
+            command: 'validate'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
+
+  - stage: Scanning_Stage
+    displayName: Scanning Stage
+    jobs:
+      - job: Code_Scanning
+        displayName: Code Scanning
+        steps:
+        - task: tfsec@1
+          displayName: TFSec
+          inputs:
+            version: 'v1.26.0'
+            args: 'tfsec .'
+            dir: '$(System.DefaultWorkingDirectory)'
+        - task: PowerShell@2
+          displayName: TFLint
+          inputs:
+            targetType: 'inline'
+            script: 'tflint'
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
+
+  - stage: PlanStage
+    displayName: Plan Stage
+    jobs:
+      - job: TerraformPlan
+        displayName: Terraform Plan
+        steps:
+        - task: TerraformTask@5
+          displayName: Terraform init
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
+            backendServiceArm: 'infra-sc'
+            backendAzureRmResourceGroupName: 'dkc-state-rg'
+            backendAzureRmStorageAccountName: 'dkcstatestg123'
+            backendAzureRmContainerName: 'statefiles'
+            backendAzureRmKey: 'dev.tfstate'
+        - task: TerraformTask@5
+          inputs:
+            provider: 'azurerm'
+            command: 'plan'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
+            environmentServiceNameAzureRM: 'infra-sc'
+
+  - stage: MannualApprovalStage
+    displayName: Mannual Approval Stage
+    pool: server
+    jobs:
+      - job: MannualApproval
+        displayName: Mannual Approval
+        steps:
+        - task: ManualValidation@1
+          displayName: Manual Validation
+          inputs:
+            notifyUsers: 'dkc.hcl@gmail.com'
+            approvers: 'dkc.hcl@gmail.com'
+
+  - stage: ApplyStage 
+    displayName: ApplyStage
+    jobs:
+      - job: TerraformApply
+        displayName: Terraform Apply
+        steps:
+        - task: TerraformTask@5
+          displayName: Terraform init
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
+            backendServiceArm: 'infra-sc'
+            backendAzureRmResourceGroupName: 'dkc-state-rg'
+            backendAzureRmStorageAccountName: 'dkcstatestg123'
+            backendAzureRmContainerName: 'statefiles'
+            backendAzureRmKey: 'dev.tfstate'
+        - task: TerraformTask@5
+          displayName: Terraform Apply
+          inputs:
+            provider: 'azurerm'
+            command: 'apply'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
+            environmentServiceNameAzureRM: 'infra-sc'
+
+
+
+
+
 
     
