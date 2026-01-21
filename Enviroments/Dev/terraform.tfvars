@@ -65,6 +65,26 @@ public_ip = {
       app = "bastion"
     }
   }
+  "vm1_pip" = {
+    pip_name            = "dev-pip-02"
+    resource_group_name = "dev_rg_01"
+    location            = "westus"
+    allocation_method   = "Static"
+    tags = {
+      env = "dev"
+      app = "vm1"
+    }
+  }
+  "vm2_pip" = {
+    pip_name            = "dev-pip-03"
+    resource_group_name = "dev_rg_01"
+    location            = "westus"
+    allocation_method   = "Static"
+    tags = {
+      env = "dev"
+      app = "vm2"
+    }
+  }
 }
 
 # Network Security Groups
