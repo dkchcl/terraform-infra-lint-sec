@@ -1,7 +1,8 @@
-trigger: 
-  - main
+name: Terraform Infra with linting and scanning
+trigger: none
+  # - main
 
-pool: New_agent
+pool: Agent_01_Dec2025
 
 stages:
   - stage: Install_fmt_init_Validate_Stage
