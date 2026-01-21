@@ -12,7 +12,7 @@ resource "azurerm_network_interface" "nic" {
       subnet_id                     = data.azurerm_subnet.subnet[each.key].id
       private_ip_address_allocation = ip_configuration.value.private_ip_address_allocation
       private_ip_address_version    = try(ip_configuration.value.private_ip_address_version, null)
-      # public_ip_address_id                               = data.azurerm_public_ip.pip[each.key].id
+      public_ip_address_id                               = data.azurerm_public_ip.pip[each.key].id
       gateway_load_balancer_frontend_ip_configuration_id = try(ip_configuration.value.gateway_load_balancer_frontend_ip_configuration_id, null)
       primary                                            = try(ip_configuration.value.primary, null)
       private_ip_address                                 = try(ip_configuration.value.private_ip_address, null)
