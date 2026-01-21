@@ -1,4 +1,5 @@
 name: Terraform Infra with linting and scanning
+
 trigger: none
   # - main
 
