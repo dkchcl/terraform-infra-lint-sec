@@ -22,7 +22,7 @@ stages:
               provider: 'azurerm'
               command: 'init'
               workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
-              backendServiceArm: 'infra-sc1'
+              backendServiceArm: 'infra-sc2'
               backendAzureRmResourceGroupName: 'dkcstate-rg'
               backendAzureRmStorageAccountName: 'dkcstatestg02'
               backendAzureRmContainerName: 'statefiles'
@@ -38,7 +38,7 @@ stages:
             provider: 'azurerm'
             command: 'init'
             workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
-            backendServiceArm: 'infra-sc1'
+            backendServiceArm: 'infra-sc2'
             backendAzureRmResourceGroupName: 'dkcstate-rg'
             backendAzureRmStorageAccountName: 'dkcstatestg02'
             backendAzureRmContainerName: 'statefiles'
@@ -50,7 +50,7 @@ stages:
             command: 'custom'
             commandOptions: 'fmt -recursive'
             outputTo: 'console'
-            environmentServiceNameAzureRM: 'infra-sc1'
+            environmentServiceNameAzureRM: 'infra-sc2'
         - task: TerraformTask@5
           displayName: Terraform Validate
           inputs:
@@ -92,7 +92,7 @@ stages:
             provider: 'azurerm'
             command: 'init'
             workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
-            backendServiceArm: 'infra-sc1'
+            backendServiceArm: 'infra-sc2'
             backendAzureRmResourceGroupName: 'dkcstate-rg'
             backendAzureRmStorageAccountName: 'dkcstatestg02'
             backendAzureRmContainerName: 'statefiles'
@@ -103,7 +103,7 @@ stages:
             provider: 'azurerm'
             command: 'plan'
             workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
-            environmentServiceNameAzureRM: 'infra-sc1'
+            environmentServiceNameAzureRM: 'infra-sc2'
 
   - stage: MannualApprovalStage
     displayName: Mannual Approval Stage
@@ -130,7 +130,7 @@ stages:
             provider: 'azurerm'
             command: 'init'
             workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
-            backendServiceArm: 'infra-sc1'
+            backendServiceArm: 'infra-sc2'
             backendAzureRmResourceGroupName: 'dkcstate-rg'
             backendAzureRmStorageAccountName: 'dkcstatestg02'
             backendAzureRmContainerName: 'statefiles'
@@ -141,7 +141,7 @@ stages:
             provider: 'azurerm'
             command: 'apply'
             workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
-            environmentServiceNameAzureRM: 'infra-sc1'
+            environmentServiceNameAzureRM: 'infra-sc2'
 
 
 
