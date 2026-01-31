@@ -24,7 +24,7 @@ stages:
               workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
               backendServiceArm: 'infra-sc1'
               backendAzureRmResourceGroupName: 'dkcstate-rg'
-              backendAzureRmStorageAccountName: 'dkcstatestg01'
+              backendAzureRmStorageAccountName: 'dkcstatestg02'
               backendAzureRmContainerName: 'statefiles'
               backendAzureRmKey: 'dev.tfstate'
 
@@ -40,7 +40,7 @@ stages:
             workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
             backendServiceArm: 'infra-sc1'
             backendAzureRmResourceGroupName: 'dkcstate-rg'
-            backendAzureRmStorageAccountName: 'dkcstatestg01'
+            backendAzureRmStorageAccountName: 'dkcstatestg02'
             backendAzureRmContainerName: 'statefiles'
             backendAzureRmKey: 'dev.tfstate'
         - task: TerraformTask@5
@@ -94,7 +94,7 @@ stages:
             workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
             backendServiceArm: 'infra-sc1'
             backendAzureRmResourceGroupName: 'dkcstate-rg'
-            backendAzureRmStorageAccountName: 'dkcstatestg01'
+            backendAzureRmStorageAccountName: 'dkcstatestg02'
             backendAzureRmContainerName: 'statefiles'
             backendAzureRmKey: 'dev.tfstate'
         - task: TerraformTask@5
@@ -132,7 +132,7 @@ stages:
             workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
             backendServiceArm: 'infra-sc1'
             backendAzureRmResourceGroupName: 'dkcstate-rg'
-            backendAzureRmStorageAccountName: 'dkcstatestg01'
+            backendAzureRmStorageAccountName: 'dkcstatestg02'
             backendAzureRmContainerName: 'statefiles'
             backendAzureRmKey: 'dev.tfstate'
         - task: TerraformTask@5
