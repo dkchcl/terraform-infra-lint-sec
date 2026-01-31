@@ -327,7 +327,7 @@ vms = {
 
 storage_accounts = {
   "stg1" = {
-    name                     = "newstg678909011"
+    name                     = "newstg6789019011"
     resource_group_name      = "dev_rg_01"
     location                 = "westus"
     account_tier             = "Standard"
